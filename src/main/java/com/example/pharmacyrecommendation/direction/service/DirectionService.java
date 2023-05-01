@@ -1,6 +1,7 @@
 package com.example.pharmacyrecommendation.direction.service;
 
 import com.example.pharmacyrecommendation.api.dto.DocumentDto;
+import com.example.pharmacyrecommendation.api.service.KakaoCategorySearchService;
 import com.example.pharmacyrecommendation.direction.entity.Direction;
 import com.example.pharmacyrecommendation.direction.repository.DirectionRepository;
 import com.example.pharmacyrecommendation.pharmacy.service.PharmacySearchService;
@@ -28,18 +29,16 @@ public class DirectionService {
     private static final String DIRECTION_BASE_URL = "https://map.kakao.com/link/map/";
 
     private final PharmacySearchService pharmacySearchService;
-//    private final DirectionRepository directionRepository;
+    private final DirectionRepository directionRepository;
 //    private final Base62Service base62Service;
 //
-//    private final KakaoCategorySearchService kakaoCategorySearchService;
-/*
+    private final KakaoCategorySearchService kakaoCategorySearchService;
 
     @Transactional
     public List<Direction> saveAll(List<Direction> directionList) {
         if (CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
         return directionRepository.saveAll(directionList);
     }
-*/
 
    /* @Transactional(readOnly = true)
     public String findDirectionUrlById(String encodedId) {
@@ -79,7 +78,6 @@ public class DirectionService {
                 .limit(MAX_SEARCH_COUNT)
                 .collect(Collectors.toList());
     }
-/*
 
     // pharmacy search by category kakao api
     public List<Direction> buildDirectionListByCategoryApi(DocumentDto inputDocumentDto) {
@@ -102,7 +100,6 @@ public class DirectionService {
                 .limit(MAX_SEARCH_COUNT)
                 .collect(Collectors.toList());
     }
-*/
 
     // Haversine formula
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
