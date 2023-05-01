@@ -2,6 +2,7 @@ package com.example.pharmacyrecommendation.pharmacy.repository
 
 import com.example.pharmacyrecommendation.AbstractIntegrationContainerBaseTest
 import com.example.pharmacyrecommendation.pharmacy.entity.Pharmacy
+import com.example.pharmacyrecommendation.pharmacy.service.PharmacyRepositoryService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
@@ -11,13 +12,17 @@ import java.time.LocalDateTime
 class PharmacyRepositoryTest extends AbstractIntegrationContainerBaseTest {
 
     @Autowired
-    private PharmacyRepository pharmacyRepository
+    PharmacyRepositoryService pharmacyRepositoryService
 
-    def setup() {
+    @Autowired
+    PharmacyRepository pharmacyRepository
+
+    void setup() {
         pharmacyRepository.deleteAll()
     }
 
     def "PharmacyRepository save"() {
+
         given:
         String address = "서울 특별시 성북구 종암동"
         String name = "은혜 약국"
@@ -41,6 +46,7 @@ class PharmacyRepositoryTest extends AbstractIntegrationContainerBaseTest {
     }
 
     def "PharmacyRepository saveAll"() {
+
         given:
         String address = "서울 특별시 성북구 종암동"
         String name = "은혜 약국"
@@ -54,7 +60,7 @@ class PharmacyRepositoryTest extends AbstractIntegrationContainerBaseTest {
                 .longitude(longitude)
                 .build()
         when:
-        pharmacyRepository.saveAll(Arrays.asList(pharmacy))
+        pharmacyRepositoryService.saveAll(Arrays.asList(pharmacy))
         def result = pharmacyRepository.findAll()
 
         then:
@@ -62,6 +68,46 @@ class PharmacyRepositoryTest extends AbstractIntegrationContainerBaseTest {
         result.get(0).getPharmacyName() == name
         result.get(0).getLatitude() == latitude
         result.get(0).getLongitude() == longitude
+    }
+
+    def "PharmacyRepository delete"() {
+
+        given:
+        String address = "서울 특별시 성북구 종암동"
+        String name = "은혜 약국"
+
+        def pharmacy = Pharmacy.builder()
+                .pharmacyAddress(address)
+                .pharmacyName(name)
+                .build()
+        when:
+        def entity = pharmacyRepository.save(pharmacy)
+        pharmacyRepository.deleteById(entity.getId())
+
+        def result = pharmacyRepository.findAll()
+        then:
+        result.size() == 0
+    }
+
+    def "PharmacyRepository findById"() {
+
+        given:
+        String address = "서울 특별시 성북구 종암동"
+        String name = "은혜 약국"
+
+        def pharmacy = Pharmacy.builder()
+                .pharmacyAddress(address)
+                .pharmacyName(name)
+                .build()
+        when:
+        def entity = pharmacyRepository.save(pharmacy)
+        def result = pharmacyRepository.findById(entity.getId()).orElse(null)
+
+
+        then:
+        entity.getId() == result.getId()
+        entity.getPharmacyName() == result.getPharmacyName()
+        entity.getPharmacyAddress() == result.getPharmacyAddress()
     }
 
 
